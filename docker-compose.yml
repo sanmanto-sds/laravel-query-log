@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  laravel-query-log:
+    image: laravel-query-log
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+      args:
+        - USER_ID
+        - GROUP_ID
+    container_name: laravel-query-log
+    restart: unless-stopped
+    volumes:
+      - ./:/srv/app

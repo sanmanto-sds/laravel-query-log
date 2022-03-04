@@ -1,0 +1,41 @@
+{
+    "name": "codivapps/laravel-query-log",
+    "type": "library",
+    "description": "Laravel sql query logging library.",
+    "keywords": [
+        "laravel",
+        "sql",
+        "query",
+        "log"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "uranoff235",
+            "email": "uranoff235@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "illuminate/database": ">=8.0",
+        "illuminate/log": ">=8.0",
+        "illuminate/support": ">=8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Codivapps\\LaravelQueryLog\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Codivapps\\LaravelQueryLog\\ServiceProvider"
+            ]
+        }
+    }
+}
