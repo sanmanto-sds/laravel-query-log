@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Codivapps\LaravelQueryLog\Listeners;
 
-use Illuminate\Database\Connection;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Log\Logger;
+use PDO;
+use RuntimeException;
 
 class QueryLogger
 {
     private Logger $logger;
+    private PDO $pdo;
 
     /**
      * QueryLogger constructor
@@ -25,7 +27,9 @@ class QueryLogger
      */
     public function handle(QueryExecuted $event): void
     {
-        $formattedSql = $this->sqlFormatter($event->sql, $event->bindings, $event->connection);
+        $this->pdo = $event->connection->getPdo();
+
+        $formattedSql = $this->sqlFormatter($event->sql, $event->bindings);
 
         $msg = sprintf(
             "Query from '%s' connection. Time %f ms. SQL:\n%s",
@@ -40,26 +44,17 @@ class QueryLogger
     /**
      * Insert bindings and formats sql
      */
-    private function sqlFormatter(string $sql, array $bindings, Connection $connection): string
+    private function sqlFormatter(string $sql, array $bindings): string
     {
         if (empty($bindings)) {
             return $sql;
         }
 
-        $pdo = $connection->getPdo();
-
         foreach ($bindings as $key => $binding) {
             $regex = $this->selectRegex($key);
+            $correctBinding = $this->typeCorrection($binding);
 
-            if (is_string($binding)) {
-                $binding = $pdo->quote($binding);
-            } elseif (is_bool($binding)) {
-                $binding = $bindings === true ? 'true' : 'false';
-            } elseif (is_null($binding)) {
-                $binding = 'null';
-            }
-
-            $sql = preg_replace($regex, $binding, $sql, 1);
+            $sql = preg_replace($regex, $correctBinding, $sql, 1);
         }
 
         return $sql;
@@ -75,5 +70,55 @@ class QueryLogger
         return is_int($key)
             ? "/\?(?=(?:[^'\\\']*'[^'\\\']*')*[^'\\\']*$)/"
             : "/:{$key}(?=(?:[^'\\\']*'[^'\\\']*')*[^'\\\']*$)/";
+    }
+
+    /**
+     * Correction binding value type
+     *
+     * @param mixed $value
+     * @throws RuntimeException
+     */
+    private function typeCorrection($value): string
+    {
+        if (is_string($value)) {
+            return $this->pdo->quote($value);
+        }
+
+        if (is_bool($value)) {
+            return ($value === true) ? 'true' : 'false';
+        }
+
+        if (is_null($value)) {
+            return 'null';
+        }
+
+        if (is_int($value)) {
+            return (string) $value;
+        }
+
+        if (is_float($value)) {
+            return $this->floatCorrection($value);
+        }
+
+        throw new RuntimeException('Wrong binding type');
+    }
+
+    /**
+     * Correction float binding value
+     */
+    private function floatCorrection(float $value): string
+    {
+        $strValue = (string) $value;
+        $regex = '/^(?<base>\d+\.\d+)E(?<sign>[+-])(?<power>\d+)$/';
+
+        if (preg_match($regex, $strValue, $match) !== 1) {
+            return $strValue;
+        }
+
+        $decimal = $match['sign'] === '-'
+            ? ((int) $match['power'] + strlen($match['base']))
+            : 0;
+
+        return rtrim(number_format($value, $decimal, '.', ''), '0');
     }
 }

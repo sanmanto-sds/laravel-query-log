@@ -17,7 +17,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/query-log.php', 'query-log.php');
+        $this->mergeConfigFrom(__DIR__ . '/../config/query-log.php', 'query-log');
     }
 
     /**
