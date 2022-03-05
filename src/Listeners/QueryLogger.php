@@ -7,7 +7,6 @@ namespace Codivapps\LaravelQueryLog\Listeners;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Log\Logger;
 use PDO;
-use RuntimeException;
 
 class QueryLogger
 {
@@ -76,7 +75,6 @@ class QueryLogger
      * Correction binding value type
      *
      * @param mixed $value
-     * @throws RuntimeException
      */
     private function typeCorrection($value): string
     {
@@ -92,15 +90,11 @@ class QueryLogger
             return 'null';
         }
 
-        if (is_int($value)) {
-            return (string) $value;
-        }
-
         if (is_float($value)) {
             return $this->floatCorrection($value);
         }
 
-        throw new RuntimeException('Wrong binding type');
+        return (string) $value;
     }
 
     /**
