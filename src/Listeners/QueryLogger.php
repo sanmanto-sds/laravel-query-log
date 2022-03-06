@@ -98,12 +98,12 @@ class QueryLogger
     }
 
     /**
-     * Correction float binding value
+     * Correction float binding value. Convert E-notation numbers
      */
     private function floatCorrection(float $value): string
     {
         $strValue = (string) $value;
-        $regex = '/^(?<base>\d+\.\d+)E(?<sign>[+-])(?<power>\d+)$/';
+        $regex = '/^(?<base>-?\d+\.\d+)E(?<sign>[+-])(?<power>\d+)$/';
 
         if (preg_match($regex, $strValue, $match) !== 1) {
             return $strValue;
@@ -113,6 +113,8 @@ class QueryLogger
             ? ((int) $match['power'] + strlen($match['base']))
             : 0;
 
-        return rtrim(number_format($value, $decimal, '.', ''), '0');
+        $correctValue = number_format($value, $decimal, '.', '');
+
+        return (strpos($correctValue, '.') === false) ? $correctValue : rtrim($correctValue, '0');
     }
 }
