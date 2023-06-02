@@ -1,5 +1,5 @@
 {
-    "name": "codivapps/laravel-query-log",
+    "name": "sanmanto-sds/laravel-query-log",
     "type": "library",
     "description": "Laravel sql query logging library.",
     "keywords": [
@@ -11,20 +11,20 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "uranoff235",
-            "email": "uranoff235@gmail.com"
+            "name": "dev",
+            "email": "dev@sanmanto.com"
         }
     ],
     "require": {
         "php": ">=7.4",
-        "ext-pdo": ">=7.4",
+        "ext-pdo": "*",
         "illuminate/database": ">=8.0",
         "illuminate/log": ">=8.0",
         "illuminate/support": ">=8.0"
     },
     "autoload": {
         "psr-4": {
-            "Codivapps\\LaravelQueryLog\\": "src/"
+            "SanmantoSds\\LaravelQueryLog\\": "src/"
         }
     },
     "config": {
@@ -35,7 +35,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Codivapps\\LaravelQueryLog\\ServiceProvider"
+                "SanmantoSds\\LaravelQueryLog\\ServiceProvider"
             ]
         }
     }

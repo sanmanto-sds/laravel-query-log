@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Codivapps\LaravelQueryLog;
+namespace SanmantoSds\LaravelQueryLog;
 
-use Codivapps\LaravelQueryLog\Listeners\{ConnectionLogger, QueryLogger};
+use SanmantoSds\LaravelQueryLog\Listeners\{ConnectionLogger, QueryLogger};
 use Illuminate\Database\Events\{QueryExecuted, TransactionBeginning, TransactionCommitted, TransactionRolledBack};
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 

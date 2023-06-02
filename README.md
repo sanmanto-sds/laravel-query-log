@@ -11,7 +11,7 @@ Laravel sql query logging library.
 Install the package via composer:
 
 ```
-composer require codivapps/laravel-query-log
+composer require sanmanto-sds/laravel-query-log
 ```
 
 ## Configuration

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Codivapps\LaravelQueryLog\Listeners;
+namespace SanmantoSds\LaravelQueryLog\Listeners;
 
 use Illuminate\Database\Events\{ConnectionEvent, TransactionBeginning, TransactionCommitted, TransactionRolledBack};
 use Illuminate\Log\Logger;
